@@ -26,11 +26,12 @@ const FirebaseService = {
             "archivos"
         );
     },
-    obtenerColeccionDescargasArchivos: async () => {
+    obtenerColeccionDescargas: async () => {
         return collection(
             await FirebaseService.obtenerFirestore(),
-            "descargasArchivos"
+            "descargas"
         );
     },
+    
 };
 export default FirebaseService;

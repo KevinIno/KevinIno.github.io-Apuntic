@@ -1,19 +1,25 @@
 <template>
-  <div class="section">
+  <div class="section_archivos">
     <div class="columns">
-      <div class="column">
-        <b-button type="is-success" icon-right="plus" @click="subirArchivo()"
-          >Nuevo</b-button
+      <div class="column is-fullwidth has-text-right">
+        <b-button
+          type="is-success"
+          icon-right="plus"
+          @click="subirArchivo()"
+          class="boton-nuevo"
         >
+          Nuevo
+        </b-button>
       </div>
     </div>
     <div class="columns">
-      <div class="column">
+      <div class="column is-fullwidth">
         <b-table
           :data="archivos"
           :loading="cargando"
           :mobile-cards="true"
           hoverable
+          class="tabla-archivos"
         >
           <b-table-column
             sortable
@@ -54,11 +60,11 @@
               :href="enlaceParaDescargar(props.row)"
               target="_blank"
             >
-              <b-icon icon="open-in-new"></b-icon>
+<b-icon icon="open-in-new"></b-icon>
             </b-button>
             &nbsp;
             <b-button
-              type="is-success"
+              type="is-success 2"
               @click="copiarAlPortapapeles(props.row)"
             >
               <b-icon icon="content-copy"></b-icon>
@@ -77,6 +83,50 @@
     </div>
   </div>
 </template>
+
+<style scoped>
+
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@700&display=swap');
+
+.form-title
+.custom-label {
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 700;
+  /* Peso de la fuente para que sea bold */
+}
+
+.section_archivos {
+  padding: 20px;
+}
+
+.boton-nuevo {
+  margin-bottom: 20px;
+  width: 100%;
+}
+
+.tabla-archivos {
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+}
+
+.b-table-column > strong {
+  font-weight: bold;
+}
+
+.has-text-centered {
+  margin-top: 20px;
+}
+
+/* Estilos adicionales para botones, si lo necesitas */
+.b-button {
+  transition: all 0.3s ease;
+}
+
+.b-button:hover {
+  opacity: 0.8;
+}
+
+</style>
 <script>
 import { deleteDoc, doc, onSnapshot, query } from '@firebase/firestore';
 import FirebaseService from '../../services/FirebaseService';
@@ -180,6 +230,16 @@ export default {
         });
         this.cargando = false;
       });
+        const coleccionDescargas = await FirebaseService.obtenerColeccionDescargas();
+        onSnapshot(query(coleccionDescargas), (instantanea) => {
+            this.descargas = []; // Reinicia el array de descargas
+            instantanea.forEach((doc) => {
+                const descarga = doc.data();
+                descarga.id = doc.id;
+                this.descargas.push(descarga);
+            });
+        });
+
 
       const coleccionDescargasArchivos = await FirebaseService.obtenerColeccionDescargasArchivos();
       onSnapshot(query(coleccionDescargasArchivos), (instantanea) => {
